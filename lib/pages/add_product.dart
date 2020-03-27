@@ -468,7 +468,7 @@ class _AddProductState extends State<AddProduct> {
         new OutlineButton(
             child: new Text('Add Product', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
             onPressed: (){
-              FirebaseDatabase.instance.reference().child('Products').child(badd).child(_radio).push().set(
+              FirebaseDatabase.instance.reference().child('Products').child('Bhubaneswar, Cuttack').child(_radio).push().set(
 {
   'description':_description,
   'imgurl':url,
