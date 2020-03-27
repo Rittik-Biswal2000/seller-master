@@ -9,6 +9,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:seller/main.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -62,23 +63,23 @@ class _AddProductState extends State<AddProduct> {
       selectradio=val;
       if(selectradio==1)
         {
-          _radio='Electronics';
+          _radio='Groceries';
         }
       else if(selectradio==2)
         {
-          _radio='TV & Appliances';
+          _radio='Fashion';
         }
       else if(selectradio==3)
       {
-        _radio='Men';
+        _radio='Electronics';
       }
       else if(selectradio==4)
       {
-        _radio='Women';
+        _radio='Sports';
       }
       else if(selectradio==5)
       {
-        _radio='Kids';
+        _radio='Books';
       }
       else if(selectradio==6)
       {
@@ -86,12 +87,9 @@ class _AddProductState extends State<AddProduct> {
       }
       else if(selectradio==7)
       {
-        _radio='Sports';
+        _radio='Beauty & Personal Care';
       }
-      else if(selectradio==8)
-      {
-        _radio='Books';
-      }
+
     });
   }
 
@@ -158,7 +156,7 @@ class _AddProductState extends State<AddProduct> {
                         SingleChildScrollView(
                             child: Container(
                                 width: 200,
-                                child: Text("Seller Registration",style: new TextStyle(fontSize: 15.0, color: Colors.white),))),
+                                child: Text("Add products",style: new TextStyle(fontSize: 15.0, color: Colors.white),))),
                         //child: new FlatButton(onPre,new Text("${widget.add}",style: new TextStyle(fontSize: 15.0),)))),
 
                       ],
@@ -196,11 +194,11 @@ class _AddProductState extends State<AddProduct> {
     return [
       new Row(
         children: <Widget>[
-          new Flexible(child: new Column(
+          /*new Flexible(child: new Column(
             children: <Widget>[
               new Image.asset('images/16x9@2x.png')
             ],
-          )),
+          )),*/
           new Flexible(child: new Column(
             children: <Widget>[
               new Padding(padding: EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0)),
@@ -267,7 +265,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Electronics')
+          new Text('Groceries')
         ],
       ),
       Row(
@@ -276,7 +274,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('TV & Appliances')
+          new Text('Fashion')
         ],
       ),
 
@@ -286,7 +284,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Men')
+          new Text('Electronics')
         ],
       ),
       Row(
@@ -295,7 +293,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Women')
+          new Text('Sports')
         ],
       ),
       Row(
@@ -304,7 +302,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Kids')
+          new Text('Books')
         ],
       ),
       Row(
@@ -313,7 +311,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Home and Furniture')
+          new Text('Home & Furniture')
         ],
       ),
       Row(
@@ -322,10 +320,10 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Sports')
+          new Text('Beauty & Personal Care')
         ],
       ),
-      Row(
+      /*Row(
         children: <Widget>[
           new Radio(value: 8, groupValue: selectradio, activeColor: Colors.green,onChanged: (val){
             print(val);
@@ -333,7 +331,7 @@ class _AddProductState extends State<AddProduct> {
           },),
           new Text('Books')
         ],
-      ),
+      ),*/
 
       new Row(
         children: <Widget>[
@@ -442,7 +440,7 @@ class _AddProductState extends State<AddProduct> {
                     child: new RaisedButton(
                       onPressed: () async{
                         pr.show();
-                         firebaseStorageRef=FirebaseStorage.instance.ref().child(_radio+"a");
+                         firebaseStorageRef=FirebaseStorage.instance.ref().child(user.uid+"_"+_radio+" "+path);
                         final StorageUploadTask task=firebaseStorageRef.putFile(file2);
                         StorageTaskSnapshot s=await task.onComplete;
                         url=await s.ref.getDownloadURL();
@@ -470,7 +468,7 @@ class _AddProductState extends State<AddProduct> {
         new OutlineButton(
             child: new Text('Add Product', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
             onPressed: (){
-              FirebaseDatabase.instance.reference().child('Products').child(_radio).push().set(
+              FirebaseDatabase.instance.reference().child('Products').child(badd).child(_radio).push().set(
 {
   'description':_description,
   'imgurl':url,
@@ -483,6 +481,7 @@ class _AddProductState extends State<AddProduct> {
 
 
               );
+              Navigator.pop(context);
             },
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
         ),

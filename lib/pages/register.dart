@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SellerRegister extends StatefulWidget {
   @override
@@ -16,6 +17,8 @@ class SellerRegister extends StatefulWidget {
 FirebaseUser user;
 FirebaseAuth _auth=FirebaseAuth.instance;
 class _SellerRegisterState extends State<SellerRegister> {
+  ProgressDialog pr;
+  double percentage = 0.0;
   bool _isSeller=true;
   String path;
   String url,url1;
@@ -123,6 +126,8 @@ class _SellerRegisterState extends State<SellerRegister> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
     return Scaffold(
         appBar: new AppBar(
           backgroundColor: Color(0xff104670),
@@ -385,11 +390,13 @@ class _SellerRegisterState extends State<SellerRegister> {
                     padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                     child: new RaisedButton(
                       onPressed: () async{
-                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child('GST_certificate');
+                        pr.show();
+                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(user.uid+'GST_certificate');
                         final StorageUploadTask task=firebaseStorageRef.putFile(file1);
                         StorageTaskSnapshot s=await task.onComplete;
                         url1=await s.ref.getDownloadURL();
                         print("url is "+url1);
+                        pr.hide();
                       },
                       child: new Text("Upload"),
                     ),
@@ -608,11 +615,13 @@ class _SellerRegisterState extends State<SellerRegister> {
                     padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                     child: new RaisedButton(
                       onPressed: () async{
-                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child('Shop_Photo');
+                        pr.show();
+                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(user.uid+"shop");
                         final StorageUploadTask task=firebaseStorageRef.putFile(file);
                         StorageTaskSnapshot s=await task.onComplete;
                         url=await s.ref.getDownloadURL();
                         print("url is "+url);
+                        pr.hide();
                       },
                       child: new Text("Upload"),
                     ),
@@ -654,6 +663,7 @@ class _SellerRegisterState extends State<SellerRegister> {
 
             });
             _updateData();
+            Navigator.pop(context);
 
           },
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))

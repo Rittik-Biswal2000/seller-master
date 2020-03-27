@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:seller/pages/add_product.dart';
 import 'package:seller/pages/location.dart';
 import 'package:seller/pages/register.dart';
 import 'package:seller/pages/sellerlogin.dart';
@@ -20,6 +22,7 @@ void main() {
       home: HomePage(null)));
 }
 String badd="Loading";
+String x;
 String curlat,curlon;
 class HomePage extends StatefulWidget {
 
@@ -46,6 +49,7 @@ class _HomePageState extends State<HomePage> {
   String s="Login to view Status";
   FirebaseUser mCurrentUser;
   FirebaseAuth _auth;
+  ProgressDialog pr;
 
   String _value = '';
   void _onClick(String value) => setState(() => _value = value);
@@ -53,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   void initState(){
     super.initState();
     //getproducts();
+    test();
 
     _getCurrentLocation();
     _getCurrentUser();
@@ -65,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     name=mCurrentUser.email.toString();
     u=mCurrentUser.uid.toString();
     if(mCurrentUser.uid.toString()!=null){
-      s="You are not a seller";
+      s="Logged in";
     }
 
   }
@@ -77,6 +82,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
 
 
     return Scaffold(
@@ -122,7 +129,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-      endDrawer: new Drawer(
+      /*endDrawer: new Drawer(
         child: new ListView(
           children: <Widget>[
             InkWell(
@@ -227,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                 )),
           ],
         ),
-      ),
+      ),*/
         body: new ListView(
 
           children: <Widget>[
@@ -237,9 +244,11 @@ class _HomePageState extends State<HomePage> {
               child:
               new OutlineButton(
                   child: new Text("SELLER LOGIN"),
-                  onPressed: (){
+                  onPressed: (u==null)?(){
+
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>new SellerLogin()));
-                  },
+
+                  }:null,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
               ),
             ),
@@ -258,10 +267,54 @@ class _HomePageState extends State<HomePage> {
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
               ),
             ),
+            Container(
+              child: new OutlineButton(
+                  child: new Text("Add Products"),
+                  onPressed: (u!=null)?(){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddProduct()));
+                  }:null,
+                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+              ),
+            ),
+            Container(
+              child: new OutlineButton(
+                  child: new Text("Logout"),
+                  onPressed: (u!=null)?(){
+                    _signOut();
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new HomePage(null)));
+                  }:null,
+                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+              ),
+            ),
           ],
         )
 
     );
+  }
+  void test() async{
+
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+    FirebaseUser user = await _auth.currentUser();
+    _firestore
+        .collection("users").where("uid", isEqualTo: user.uid)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => x = '${f.data}');
+      print(x.split(',')[2].split(': ')[1]);
+      x=x.split(',')[2].split(': ')[1];
+      print(x);
+
+      //print(s('isSeller'));
+      /*if(s.split(',')[2].split(': ')[1]=='true'){
+        print("true");
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddProduct()));
+      }*/
+
+    });
+
   }
 
   _getCurrentLocation() {
@@ -297,4 +350,6 @@ class _HomePageState extends State<HomePage> {
       print(e);
     }
   }
+
+
 }

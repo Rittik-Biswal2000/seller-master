@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:seller/main.dart';
 import 'package:seller/pages/add_product.dart';
 String _email;
 String _password;
@@ -20,7 +22,7 @@ class _SellerLoginState extends State<SellerLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.blue,
-        appBar: new AppBar(
+       /* appBar: new AppBar(
           backgroundColor: Color(0xff104670),
           title: Container(
               child: SingleChildScrollView(
@@ -58,9 +60,9 @@ class _SellerLoginState extends State<SellerLogin> {
           //leading:new Text("hi"),
 
 
-        ),
+        ),*/
 
-        endDrawer: new Drawer(
+        /*endDrawer: new Drawer(
           child: new ListView(
             children: <Widget>[
               InkWell(
@@ -159,7 +161,7 @@ class _SellerLoginState extends State<SellerLogin> {
                   )),
             ],
           ),
-        ),
+        ),*/
         body: new ListView(
 
           children: <Widget>[
@@ -243,10 +245,21 @@ class _SellerLoginState extends State<SellerLogin> {
             style: TextStyle(
                 color: Colors.yellow, fontWeight: FontWeight.bold),),
           onPressed:() {
-            FirebaseAuth.instance.signInWithEmailAndPassword(
-                email: _email, password: _password);
-            add();
-            //Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddProduct()));
+            FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password).then((user){
+              Fluttertoast.showToast(
+                  msg: "Logged in",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                 // backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 8.0
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(null)),
+              );
+            }).catchError((e) {});
           },
           shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0)),
@@ -267,10 +280,10 @@ class _SellerLoginState extends State<SellerLogin> {
       snapshot.documents.forEach((f) => s = '${f.data}');
       print(s.split(',')[2].split(': '));
       //print(s('isSeller'));
-      if(s.split(',')[2].split(': ')[1]=='true'){
+      /*if(s.split(',')[2].split(': ')[1]=='true'){
         print("true");
         Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddProduct()));
-      }
+      }*/
 
     });
 
