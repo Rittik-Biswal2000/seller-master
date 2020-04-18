@@ -1,29 +1,36 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:seller/entry.dart';
 import 'package:seller/pages/add_product.dart';
+import 'package:seller/pages/MyProducts.dart';
 import 'package:seller/pages/location.dart';
 import 'package:seller/pages/register.dart';
 import 'package:seller/pages/sellerlogin.dart';
+import 'package:seller/src/welcomPage.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import './pages/login_page.dart';
 
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 FirebaseUser user;
 
-void main() {
+/*void main() {
   runApp(MaterialApp(debugShowCheckedModeBanner: false,
-      //home:LoginPage()));
 
 
-      home: HomePage(null)));
-}
+
+      home: MyApp()));
+}*/
 String badd="Loading";
 String x;
-String curlat,curlon;
+//String curlat,curlon;
 class HomePage extends StatefulWidget {
 
   final add;
@@ -39,22 +46,27 @@ Future<void> currentUser() async {
   print(user.displayName);
   return user;
 }
+DateTime backbuttonpressedTime;
 class _HomePageState extends State<HomePage> {
 
-  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  final Geolocator geolocator = Geolocator()
+    ..forceAndroidLocationManager;
   Position _currentPosition;
-  String _currentAddress ;
+  String _currentAddress;
+
   String u;
-  String name="hello";
-  String s="Login to view Status";
+  String name = "hello";
+  String s = "Login to view Status";
   FirebaseUser mCurrentUser;
   FirebaseAuth _auth;
   ProgressDialog pr;
 
   String _value = '';
+
   void _onClick(String value) => setState(() => _value = value);
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     //getproducts();
     test();
@@ -63,73 +75,94 @@ class _HomePageState extends State<HomePage> {
     _getCurrentUser();
     print("Here outside async");
   }
-  _getCurrentUser()async{
-    _auth=FirebaseAuth.instance;
-    mCurrentUser=await _auth.currentUser();
-    print("Hello"+mCurrentUser.email.toString());
-    name=mCurrentUser.email.toString();
-    u=mCurrentUser.uid.toString();
-    if(mCurrentUser.uid.toString()!=null){
-      s="Logged in";
-    }
 
+  _getCurrentUser() async {
+    _auth = FirebaseAuth.instance;
+    mCurrentUser = await _auth.currentUser();
+    print("Hello" + mCurrentUser.email.toString());
+    name = mCurrentUser.email.toString();
+    u = mCurrentUser.uid.toString();
+    if (mCurrentUser.uid.toString() != null) {
+      s = "Logged in";
+    }
   }
 
   _signOut() async {
     await _auth.signOut();
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyApp()),
+    );
   }
 
 
   @override
   Widget build(BuildContext context) {
-    pr = new ProgressDialog(context, showLogs: true);
-    pr.style(message: 'Please wait...');
+    pr = new ProgressDialog(context);
+    pr.style(
+        message: 'Please Wait...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
+    );
 
 
     return Scaffold(
-        backgroundColor: Colors.blue,
-      appBar: new AppBar(
-            backgroundColor: Color(0xff104670),
-            title: Container(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
+        backgroundColor: Color(0xff03a9fa),
+
+        appBar: new AppBar(
+          backgroundColor: Color(0xff104670),
+          automaticallyImplyLeading: false,
+          title: Container(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
                   children: <Widget>[
                     Row(
                       children:
-                     <Widget>[
-                      new IconButton(
-                        icon: new Icon(Icons.place),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>new MyLocation()));
-                          _getCurrentLocation();
-                          currentUser();
-                        },
-                      ),
-                       SingleChildScrollView(
-                           child: Container(
-                              child: new FlatButton(onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>new MyLocation()));
-                              }, child: Text(widget.add==null?badd:"${widget.add}",style: new TextStyle(fontSize: 15.0, color: Colors.white),))),)
-                             //child: new FlatButton(onPre,new Text("${widget.add}",style: new TextStyle(fontSize: 15.0),)))),
+                      <Widget>[
+                        new IconButton(
+                          icon: new Icon(Icons.place),
+                          onPressed: () {
+                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>new MyLocation()));
+                            _getCurrentLocation();
+                            currentUser();
+                          },
+                        ),
+                        SingleChildScrollView(
+                          child: Container(
+                              child: new FlatButton(onPressed: () {
+                                /*Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => new MyLocation()));*/
+                              }, child: Text(widget.add == null
+                                  ? badd
+                                  : "${widget.add}", style: new TextStyle(
+                                  fontSize: 15.0, color: Colors.white),))),)
+                        //child: new FlatButton(onPre,new Text("${widget.add}",style: new TextStyle(fontSize: 15.0),)))),
 
 
-                    ],
-                  ),
-              ],
+                      ],
+                    ),
+                  ],
 
-            ),
-                )
-            ),
-        //leading:new Text("hi"),
-
-
+                ),
+              )
           ),
+          //leading:new Text("hi"),
 
 
+        ),
 
 
-      /*endDrawer: new Drawer(
+        /*endDrawer: new Drawer(
         child: new ListView(
           children: <Widget>[
             InkWell(
@@ -235,66 +268,91 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),*/
-        body: new ListView(
+        body: WillPopScope(
+          onWillPop: _onBackPressed,
+          child: new ListView(
 
-          children: <Widget>[
-            new Image.asset('images/16x9@2x.png'),
-            new Padding(padding: EdgeInsets.fromLTRB(0.0,50.0,0.0,0.0)),
-            new Container(
-              child:
-              new OutlineButton(
-                  child: new Text("SELLER LOGIN"),
-                  onPressed: (u==null)?(){
+            children: <Widget>[
+              new Image.asset('images/16x9@2x.png'),
+              new Padding(padding: EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0)),
+              new Container(/*
+                child:
+                new OutlineButton(/*
+                    child: new Text("SELLER LOGIN"),
+                    onPressed: (u==null)?(){
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new SellerLogin()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>new SellerLogin()));
 
-                  }:null,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+                    }:null,
+                    shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+                */),
+             */),
+
+
+              new Padding(padding: EdgeInsets.all(30.0)),
+
+              new Text(s, textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.0),),
+              new Padding(padding: EdgeInsets.all(10.0)),
+              /*Container(
+                child: new OutlineButton(
+                    child: new Text("APPLY FOR SELLER"),
+                    onPressed: (u!=null)?(){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>new SellerRegister()));
+                    }:null,
+                    shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+                ),
+              ),*/
+              Container(
+                child: new OutlineButton(
+                    child: new Text("Add Products"),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => new AddProduct(null)));
+                    } ,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0))
+                ),
+
               ),
-            ),
+              Container(
+                child: new OutlineButton(
+                    child: new Text("My Products"),
+                    onPressed:  () async {
+                      pr.show();
+                      await getproducts();
+                      pr.hide();
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => new mp()));
+                    } ,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0))
+                ),
 
-
-            new Padding(padding: EdgeInsets.all(30.0)),
-
-            new Text(s, textAlign: TextAlign.center,style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold,fontSize: 22.0),),
-            new Padding(padding: EdgeInsets.all(10.0)),
-            Container(
-              child: new OutlineButton(
-                  child: new Text("APPLY FOR SELLER"),
-                  onPressed: (u!=null)?(){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new SellerRegister()));
-                  }:null,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
               ),
-            ),
-            Container(
-              child: new OutlineButton(
-                  child: new Text("Add Products"),
-                  onPressed: (u!=null)?(){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new AddProduct()));
-                  }:null,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
-              ),
-            ),
-            Container(
-              child: new OutlineButton(
-                  child: new Text("Logout"),
-                  onPressed: (u!=null)?(){
-                    _signOut();
+              Container(
+                child: new OutlineButton(
+                    child: new Text("Logout"),
+                    onPressed: (u != null) ? () {
+                      _signOut();
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new HomePage(null)));
-                  }:null,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => new HomePage(null)));
+                    } : null,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0))
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
 
     );
   }
-  void test() async{
 
-
+  void test() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _firestore = Firestore.instance;
     FirebaseUser user = await _auth.currentUser();
@@ -304,7 +362,7 @@ class _HomePageState extends State<HomePage> {
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) => x = '${f.data}');
       print(x.split(',')[2].split(': ')[1]);
-      x=x.split(',')[2].split(': ')[1];
+      x = x.split(',')[2].split(': ')[1];
       print(x);
 
       //print(s('isSeller'));
@@ -314,11 +372,11 @@ class _HomePageState extends State<HomePage> {
       }*/
 
     });
-
   }
 
   _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    final Geolocator geolocator = Geolocator()
+      ..forceAndroidLocationManager;
 
     geolocator
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
@@ -336,8 +394,8 @@ class _HomePageState extends State<HomePage> {
     try {
       List<Placemark> p = await geolocator.placemarkFromCoordinates(
           _currentPosition.latitude, _currentPosition.longitude);
-      curlat=_currentPosition.latitude.toString();
-      curlon=_currentPosition.longitude.toString();
+      var clat = _currentPosition.latitude.toString();
+      var clon = _currentPosition.longitude.toString();
 
       Placemark place = p[0];
 
@@ -345,11 +403,38 @@ class _HomePageState extends State<HomePage> {
         _currentAddress = "${place.locality}";
         print(place.locality);
       });
-      badd=_currentAddress;
+      badd = _currentAddress;
     } catch (e) {
       print(e);
     }
   }
 
 
+  Future<bool> _onBackPressed() {
+
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Are you sure?'),
+          content: Text('Do you want to exit an App'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            )
+          ],
+        );
+      },
+    ) ?? false;
+  }
 }

@@ -2,18 +2,37 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:seller/src/loginPage.dart';
+
+import 'location.dart';
+
 
 class SellerRegister extends StatefulWidget {
+  final add;
+  var lat,lon;
+  SellerRegister(this.add, this.lat,this.lon);
+
+
   @override
   _SellerRegisterState createState() => _SellerRegisterState();
 }
+String badd="Loading";
+String x;
+String curlat,curlon;
+final Geolocator geolocator = Geolocator()
+  ..forceAndroidLocationManager;
+Position _currentPosition;
+String _currentAddress;
 FirebaseUser user;
 FirebaseAuth _auth=FirebaseAuth.instance;
 class _SellerRegisterState extends State<SellerRegister> {
@@ -64,6 +83,8 @@ class _SellerRegisterState extends State<SellerRegister> {
   void initState() {
     super.initState();
     getcurrentuser();
+    //_getCurrentLocation();
+
     _controller.addListener(() => _extension = _controller.text);
     _controller1.addListener(() => _extension1 = _controller1.text);
     selectradio=0;
@@ -74,10 +95,10 @@ class _SellerRegisterState extends State<SellerRegister> {
 
       selectradio=val;
       if(selectradio==1){
-        _radio='Yes';
+        _radio='true';
       }
       else
-        _radio='No';
+        _radio='false';
     });
   }
 
@@ -179,6 +200,34 @@ class _SellerRegisterState extends State<SellerRegister> {
 
   List<Widget> buildInputs() {
     return [
+      SizedBox(height: 20.0),
+      new Padding(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+        child: new RaisedButton(
+          onPressed: () async{
+            pr.show();
+            var loc=await _getCurrentLocation();
+            print("Current Location is : "+loc.toString());
+            pr.hide();
+            await Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new MyLocation()));
+
+
+          },
+          child: new Text("Choose Your Location"),
+
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child:  new InkWell(
+          onTap: () async{
+            await Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new MyLocation()));
+          },
+          child: ListTile(title: Text(widget.add==null?" ":'${widget.add}')),
+        ),
+      ),
       SizedBox(height: 20.0),
       new Text('Shop Name'),
 
@@ -327,16 +376,16 @@ class _SellerRegisterState extends State<SellerRegister> {
       ),
 
       SizedBox(height: 20.0),
-      new Text('GST Number'),
+      new Text('Aadhar Number'),
 
       new TextFormField(
-        decoration: new InputDecoration(hintText: 'Enter GST Number',border: OutlineInputBorder(
+        decoration: new InputDecoration(hintText: 'Enter Aadhar Number',border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             borderSide: BorderSide(color: Colors.grey)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 borderSide: BorderSide(color: Colors.grey))),
-        validator: (value) => value.isEmpty ? 'GST Number can\'t be empty' : null,
+        validator: (value) => value.isEmpty ? 'Aadhar Number can\'t be empty' : null,
         onChanged: (val){
           setState(() =>_gst=val);
         },
@@ -353,7 +402,7 @@ class _SellerRegisterState extends State<SellerRegister> {
               child: new Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  new Text('Upload your GST certificate'),
+                  new Text('Upload your Aadhar certificate'),
                   new Padding(
                     padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                     child: new RaisedButton(
@@ -391,7 +440,7 @@ class _SellerRegisterState extends State<SellerRegister> {
                     child: new RaisedButton(
                       onPressed: () async{
                         pr.show();
-                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(user.uid+'GST_certificate');
+                        final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(user.uid+'Aadhar_certificate');
                         final StorageUploadTask task=firebaseStorageRef.putFile(file1);
                         StorageTaskSnapshot s=await task.onComplete;
                         url1=await s.ref.getDownloadURL();
@@ -407,9 +456,70 @@ class _SellerRegisterState extends State<SellerRegister> {
           )),
 
       SizedBox(height: 20.0),
-      new Text('Address'),
 
-      new TextFormField(
+
+      /*new FlatButton(
+        child: Text('Choose your location'),
+        onPressed: () async{
+          //await _getCurrentLocation();
+
+
+
+         await Navigator.push(context, MaterialPageRoute(
+              builder: (context) => new MyLocation()));
+          print("location is");
+          print(widget.add);
+        },
+      ),*/
+     /* new Padding(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+        child: new RaisedButton(
+          onPressed: () async{
+            pr.show();
+             var loc=await _getCurrentLocation();
+             print("Current Location is : "+loc.toString());
+             pr.hide();
+            await Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new MyLocation()));
+
+
+          },
+          child: new Text("Choose Your Location"),
+
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child:  new InkWell(
+          onTap: () async{
+            await Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new MyLocation()));
+          },
+          child: ListTile(title: Text(widget.add==null?" ":'${widget.add}')),
+        ),
+      ),*/
+     /* Padding(
+        padding: EdgeInsets.all(8.0),
+        child: new TextFormField(
+          decoration: new InputDecoration(hintText: 'Enter more details',border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              borderSide: BorderSide(color: Colors.grey)),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey))),
+          validator: (value) => value.isEmpty ? 'Address can\'t be empty' : null,
+          onChanged: (val){
+            setState(() =>_add1=val);
+          },
+
+        ),
+
+      ),*/
+
+      //new Text(widget.add==null?" ":'${widget.add}'),
+
+
+     /* new TextFormField(
         decoration: new InputDecoration(hintText: 'Address',border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             borderSide: BorderSide(color: Colors.grey)),
@@ -421,10 +531,10 @@ class _SellerRegisterState extends State<SellerRegister> {
           setState(() =>_add1=val);
         },
 
-      ),
+      ),*/
 
       SizedBox(height: 20.0),
-      new Text('Address 2'),
+      new Text('Address'),
 
       new TextFormField(
         decoration: new InputDecoration(hintText: 'Address',border: OutlineInputBorder(
@@ -602,7 +712,7 @@ class _SellerRegisterState extends State<SellerRegister> {
                             title: new Text(
                               name,
                             ),
-                            subtitle: new Text("hello"+path),
+                            subtitle: new Text(path),
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) => new Divider(),
@@ -640,7 +750,7 @@ class _SellerRegisterState extends State<SellerRegister> {
         new OutlineButton(
           child: new Text('Submit For Verification', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
           onPressed:
-          (){
+          ()async{/*
             Firestore.instance.collection('Application for sellers').document(user.uid).setData({
               'GST_Certificate':url,
               'Email_id':user.email,
@@ -662,10 +772,46 @@ class _SellerRegisterState extends State<SellerRegister> {
 
 
             });
-            _updateData();
+            _updateData();*/
+            pr.show();
+            await FirebaseDatabase.instance.reference()
+.child('ApplicationForSeller').child(user.uid).update({
+              //'GST_Certificate':url,
+              'Email_id':user.email,
+              'Shop_Name':_shopname,
+              'Owner_Name':_ownername,
+              'Owner_Number':_phone,
+              'Manager_Name':_mname,
+              'Manager_Phone':_mphone,
+              'Aadhar_Number':_gst,
+              'Address1':"${widget.add}",
+              'Address2':_add2,
+              'City':_city,
+              'State':_state,
+              'Zip':_zip,
+              'Latitude':'${widget.lat}',
+              'Longitude':'${widget.lon}',
+              'HaveMulShop':_radio
+              //'Shop_Image':url1
+            });
+            pr.hide();
+            Fluttertoast.showToast(
+                msg: "Application Submitted !!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+
+                textColor: Colors.white,
+                fontSize: 8.0
+            );
             Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => lp()),
+            );
 
           },
+
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
         ),
       ];
@@ -685,4 +831,52 @@ class _SellerRegisterState extends State<SellerRegister> {
        print(user.uid);
 
    }
+}
+Future<String>_getCurrentLocation() async{
+  var p;
+  final Geolocator geolocator = Geolocator()
+    ..forceAndroidLocationManager;
+
+  await geolocator
+      .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+      .then((Position position) async {
+    _currentPosition = position;
+    p=await _getAddressFromLatLng();
+    /*setState(() {
+
+    });*/
+    //
+  }).catchError((e) {
+    print(e);
+  });
+
+  //print("p is :"+'${p}');
+  return p;
+}
+
+Future<String>_getAddressFromLatLng() async {
+  try {
+    List<Placemark> p = await geolocator.placemarkFromCoordinates(
+        _currentPosition.latitude, _currentPosition.longitude);
+    curlat = _currentPosition.latitude.toString();
+    curlon = _currentPosition.longitude.toString();
+
+    Placemark place = p[0];
+    //print("in this page");
+    _currentAddress="${place.locality}";
+    //print(place.locality);
+
+    /*setState(() {
+        _currentAddress = "${place.locality}";
+        print(place.locality);
+      });*/
+    badd = _currentAddress;
+    // print("Current location is :"+badd);
+  } catch (e) {
+    print(e);
+  }
+
+  var x=badd;
+  // print("location is : "+x);
+  return x;
 }
