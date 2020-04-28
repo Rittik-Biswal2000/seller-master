@@ -201,6 +201,12 @@ class _mpState extends State<mp> {
                           children: <Widget>[
                             new FlatButton(onPressed: (){
                               //createAlertDialog(context, name.split(': ')[1], imgurl, price.split(': ')[1]);
+                              print(prod_cat[index]);
+                              print(prod_id[index]);
+                              print(name[index]);
+                              print(imgurl[index]);
+                              print(price[index]);
+                              print(quantity[index]);
 
 
 

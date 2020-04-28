@@ -162,9 +162,9 @@ class _SellerRegisterState extends State<SellerRegister> {
                       <Widget>[
 
                         SingleChildScrollView(
-                          child: Container(
-                              width: 200,
-                               child: Text("Seller Registration",style: new TextStyle(fontSize: 15.0, color: Colors.white),))),
+                            child: Container(
+                                width: 200,
+                                child: Text("Seller Registration",style: new TextStyle(fontSize: 15.0, color: Colors.white),))),
                         //child: new FlatButton(onPre,new Text("${widget.add}",style: new TextStyle(fontSize: 15.0),)))),
 
                       ],
@@ -415,23 +415,23 @@ class _SellerRegisterState extends State<SellerRegister> {
                         ? new Container(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       height: MediaQuery.of(context).size.height * 0.10,
-                          child: new ListView.separated(
-                            itemCount: _paths != null && _paths.isNotEmpty ? _paths.length : 1,
-                            itemBuilder: (BuildContext context, int index) {
-                              final bool isMultiPath = _paths != null && _paths.isNotEmpty;
-                              final String name = 'File: ' + (isMultiPath ? _paths.keys.toList()[index] : _fileName ?? '...');
-                               path = isMultiPath ? _paths.values.toList()[index].toString() : _path;
-                              file1=new File(path);
+                      child: new ListView.separated(
+                        itemCount: _paths != null && _paths.isNotEmpty ? _paths.length : 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          final bool isMultiPath = _paths != null && _paths.isNotEmpty;
+                          final String name = 'File: ' + (isMultiPath ? _paths.keys.toList()[index] : _fileName ?? '...');
+                          path = isMultiPath ? _paths.values.toList()[index].toString() : _path;
+                          file1=new File(path);
 
-                              return new ListTile(
-                                title: new Text(
-                                  name,
-                                ),
-                                subtitle: new Text(path),
-                              );
-                            },
-                            separatorBuilder: (BuildContext context, int index) => new Divider(),
-                          ),
+                          return new ListTile(
+                            title: new Text(
+                              name,
+                            ),
+                            subtitle: new Text(path),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) => new Divider(),
+                      ),
                     )
                         : new Container(),
                   ),
@@ -462,16 +462,13 @@ class _SellerRegisterState extends State<SellerRegister> {
         child: Text('Choose your location'),
         onPressed: () async{
           //await _getCurrentLocation();
-
-
-
          await Navigator.push(context, MaterialPageRoute(
               builder: (context) => new MyLocation()));
           print("location is");
           print(widget.add);
         },
       ),*/
-     /* new Padding(
+      /* new Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
         child: new RaisedButton(
           onPressed: () async{
@@ -481,11 +478,8 @@ class _SellerRegisterState extends State<SellerRegister> {
              pr.hide();
             await Navigator.push(context, MaterialPageRoute(
                 builder: (context) => new MyLocation()));
-
-
           },
           child: new Text("Choose Your Location"),
-
         ),
       ),
       Padding(
@@ -498,7 +492,7 @@ class _SellerRegisterState extends State<SellerRegister> {
           child: ListTile(title: Text(widget.add==null?" ":'${widget.add}')),
         ),
       ),*/
-     /* Padding(
+      /* Padding(
         padding: EdgeInsets.all(8.0),
         child: new TextFormField(
           decoration: new InputDecoration(hintText: 'Enter more details',border: OutlineInputBorder(
@@ -511,15 +505,13 @@ class _SellerRegisterState extends State<SellerRegister> {
           onChanged: (val){
             setState(() =>_add1=val);
           },
-
         ),
-
       ),*/
 
       //new Text(widget.add==null?" ":'${widget.add}'),
 
 
-     /* new TextFormField(
+      /* new TextFormField(
         decoration: new InputDecoration(hintText: 'Address',border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             borderSide: BorderSide(color: Colors.grey)),
@@ -530,7 +522,6 @@ class _SellerRegisterState extends State<SellerRegister> {
         onChanged: (val){
           setState(() =>_add1=val);
         },
-
       ),*/
 
       SizedBox(height: 20.0),
@@ -549,12 +540,85 @@ class _SellerRegisterState extends State<SellerRegister> {
         },
 
       ),
+     /* new DropdownButton<String>(
+        items: [
+          DropdownMenuItem<String>(
+            value:"Bhubaneswar",
+            child: Center(
+              child:Text("Bhubaneswar"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Cuttack",
+            child: Center(
+              child:Text("Cuttack"),
+            ),
+          )
+        ],
+        onChanged: (val){
+          setState(() {
+            _city=val;
+          });
+        },
+      ),*/
 
 
       SizedBox(height: 20.0),
       new Row(
         children: <Widget>[
-          new Flexible(child: new Column(
+          new DropdownButton<String>(
+            hint: Text(_city==null?"Select your City":_city),
+            items: [
+              DropdownMenuItem<String>(
+                value:"Bhubaneswar",
+                child: Center(
+                  child:Text("Bhubaneswar"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Cuttack",
+                child: Center(
+                  child:Text("Cuttack"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Sambalpur",
+                child: Center(
+                  child:Text("Sambalpur"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Bargarh",
+                child: Center(
+                  child:Text("Bargarh"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Puri",
+                child: Center(
+                  child:Text("Puri"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Rourkela",
+                child: Center(
+                  child:Text("Rourkela"),
+                ),
+              ),
+              DropdownMenuItem<String>(
+                value:"Jagatsinghpur",
+                child: Center(
+                  child:Text("Jagatsinghpur"),
+                ),
+              ),
+            ],
+            onChanged: (val){
+              setState(() {
+                _city=val;
+              });
+            },
+          ),
+          /*new Flexible(child: new Column(
             children: <Widget>[
               new Text('City'),
 
@@ -575,7 +639,7 @@ class _SellerRegisterState extends State<SellerRegister> {
               ),
             ],
           ),
-          ),
+          ),*/
 
           new Padding(padding: EdgeInsets.fromLTRB(5.0,0.0,0.0,0.0)),
 
@@ -668,7 +732,7 @@ class _SellerRegisterState extends State<SellerRegister> {
             ],
           ),
           ),
-          
+
           new Flexible(child: new Text("No"))
 
         ],
@@ -705,8 +769,8 @@ class _SellerRegisterState extends State<SellerRegister> {
                         itemBuilder: (BuildContext context, int index) {
                           final bool isMultiPath = _paths1 != null && _paths1.isNotEmpty;
                           final String name = 'File: ' + (isMultiPath ? _paths1.keys.toList()[index] : _fileName1 ?? '...');
-                           path = isMultiPath ? _paths1.values.toList()[index].toString() : _path1;
-                           file=new File(path);
+                          path = isMultiPath ? _paths1.values.toList()[index].toString() : _path1;
+                          file=new File(path);
 
                           return new ListTile(
                             title: new Text(
@@ -748,9 +812,9 @@ class _SellerRegisterState extends State<SellerRegister> {
     if (true) {
       return [
         new OutlineButton(
-          child: new Text('Submit For Verification', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
-          onPressed:
-          ()async{/*
+            child: new Text('Submit For Verification', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
+            onPressed:
+                ()async{/*
             Firestore.instance.collection('Application for sellers').document(user.uid).setData({
               'GST_Certificate':url,
               'Email_id':user.email,
@@ -767,50 +831,46 @@ class _SellerRegisterState extends State<SellerRegister> {
               'Zip':_zip,
               'More_than_one shops?':_radio,
               'Shop_Image':url1
-
-
-
-
             });
             _updateData();*/
-            pr.show();
-            await FirebaseDatabase.instance.reference()
-.child('ApplicationForSeller').child(user.uid).update({
-              //'GST_Certificate':url,
-              'Email_id':user.email,
-              'Shop_Name':_shopname,
-              'Owner_Name':_ownername,
-              'Owner_Number':_phone,
-              'Manager_Name':_mname,
-              'Manager_Phone':_mphone,
-              'Aadhar_Number':_gst,
-              'Address1':"${widget.add}",
-              'Address2':_add2,
-              'City':_city,
-              'State':_state,
-              'Zip':_zip,
-              'Latitude':'${widget.lat}',
-              'Longitude':'${widget.lon}',
-              'HaveMulShop':_radio
-              //'Shop_Image':url1
-            });
-            pr.hide();
-            Fluttertoast.showToast(
-                msg: "Application Submitted !!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
+              pr.show();
+              await FirebaseDatabase.instance.reference()
+                  .child('ApplicationForSeller').child(user.uid).update({
+                //'GST_Certificate':url,
+                'Email_id':user.email,
+                'Shop_Name':_shopname,
+                'Owner_Name':_ownername,
+                'Owner_Number':_phone,
+                'Manager_Name':_mname,
+                'Manager_Phone':_mphone,
+                'Aadhar_Number':_gst,
+                'Address1':"${widget.add}",
+                'Address2':_add2,
+                'City':_city,
+                'State':_state,
+                'Zip':_zip,
+                'Latitude':'${widget.lat}',
+                'Longitude':'${widget.lon}',
+                'HaveMulShop':_radio
+                //'Shop_Image':url1
+              });
+              pr.hide();
+              Fluttertoast.showToast(
+                  msg: "Application Submitted !!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
 
-                textColor: Colors.white,
-                fontSize: 8.0
-            );
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => lp()),
-            );
+                  textColor: Colors.white,
+                  fontSize: 8.0
+              );
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => lp()),
+              );
 
-          },
+            },
 
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
         ),
@@ -818,19 +878,19 @@ class _SellerRegisterState extends State<SellerRegister> {
     }
   }
 
- getcurrentuser() async {
+  getcurrentuser() async {
     user=await _auth.currentUser();
   }
 
-   _updateData() async{
-       await Firestore.instance.collection('users')
-           .document(user.uid)
-           .updateData({'isSeller': _isSeller});
-       print(_isSeller);
-       print("Ahoy");
-       print(user.uid);
+  _updateData() async{
+    await Firestore.instance.collection('users')
+        .document(user.uid)
+        .updateData({'isSeller': _isSeller});
+    print(_isSeller);
+    print("Ahoy");
+    print(user.uid);
 
-   }
+  }
 }
 Future<String>_getCurrentLocation() async{
   var p;
@@ -843,7 +903,6 @@ Future<String>_getCurrentLocation() async{
     _currentPosition = position;
     p=await _getAddressFromLatLng();
     /*setState(() {
-
     });*/
     //
   }).catchError((e) {

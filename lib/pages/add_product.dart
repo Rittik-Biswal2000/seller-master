@@ -1,3 +1,5 @@
+import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,7 +24,7 @@ class AddProduct extends StatefulWidget {
   @override
   _AddProductState createState() => _AddProductState();
 }
-
+String scity;
 FirebaseUser user;
 List u=[];
 class _AddProductState extends State<AddProduct> {
@@ -36,6 +39,7 @@ class _AddProductState extends State<AddProduct> {
   String path;
   StorageReference firebaseStorageRef,firebaseStorageRef1,firebaseStorageRef2,firebaseStorageRef3,firebaseStorageRef4,firebaseStorageRef5;
   String url;
+
 
   String _email;
   String _password;
@@ -946,10 +950,11 @@ class _AddProductState extends State<AddProduct> {
         new OutlineButton(
             child: new Text('Add Product', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
             onPressed: () {
+              //https://duckhawk-1699a.firebaseio.com/ApplicationForSeller.json
 
 
               FirebaseDatabase.instance.reference().child('Products').child(
-                  widget.add == null ? badd : "${widget.add}")
+                  scity)
                   .child(_radio)
                   .push()
                   .set(
@@ -1027,4 +1032,14 @@ class _AddProductState extends State<AddProduct> {
 void getuser() async{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   user = await _auth.currentUser();
+  String link="https://duckhawk-1699a.firebaseio.com/ApplicationForSeller/"+user.uid+".json";
+  final resource = await http.get(link);
+  if(resource.statusCode == 200)
+    {
+      LinkedHashMap<String,dynamic>data=jsonDecode(resource.body);
+      print("city is:");
+      print(data["City"]);
+      scity=data["City"];
+
+    }
 }

@@ -7,8 +7,26 @@ class item_info extends StatefulWidget {
   @override
   _item_infoState createState() => _item_infoState();
 }
-
+bool _isEditingText1 = false;
+TextEditingController _editingController1;
+String initialText1="";
+bool _isEditingText2 = false;
+TextEditingController _editingController2;
+//String initialText2="Edit Price";
+bool _isEditingText3 = false;
+TextEditingController _editingController3;
+//String initialText3="Edit Quantity";
 class _item_infoState extends State<item_info> {
+  @override
+  void initState() {
+    super.initState();
+    _editingController1 = TextEditingController(text: widget.n);
+  }
+  @override
+  void dispose() {
+    _editingController1.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     print("in item info page");
@@ -30,12 +48,43 @@ class _item_infoState extends State<item_info> {
             )
           ),
           Row(
+
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.all(16.0),
-                child: new Container(
-                  child: new Text(widget.n),
-                ),
+
+                  child: new Container(
+                    child: _isEditingText1==true?
+                    new TextField(
+                      onSubmitted: (newValue){
+                        setState(() {
+                          initialText1 = newValue;
+                          _isEditingText1 =false;
+                        });
+                      },
+                      autofocus: true,
+                      controller: _editingController1,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+    setState(() {
+    _isEditingText1 = true;
+    });
+    },
+      child: Text(
+        initialText1==""?widget.n:initialText1,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 18.0,
+        ),
+      ),);
+
+                        :null,
+                    //child: new Text(widget.n),
+
+
+                  ),
+
 
               ),
             ],
@@ -89,4 +138,36 @@ class _item_infoState extends State<item_info> {
 
 
   }
+  Widget _editTitleTextField() {
+    if (_isEditingText1)
+      return Container(
+        child: TextField(
+          onSubmitted: (newValue){
+            setState(() {
+              initialText1 = newValue;
+              _isEditingText1 =false;
+            });
+          },
+          autofocus: true,
+          controller: _editingController1,
+        ),
+      );
+    return InkWell(
+        onTap: () {
+      setState(() {
+        _isEditingText1 = true;
+      });
+    },
+    child: Text(
+    initialText1==""?widget.n:initialText1,
+    style: TextStyle(
+    color: Colors.black,
+    fontSize: 18.0,
+    ),
+    ),);
+  }
+
+
 }
+
+
