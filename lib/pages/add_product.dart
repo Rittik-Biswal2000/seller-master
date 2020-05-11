@@ -953,10 +953,7 @@ class _AddProductState extends State<AddProduct> {
               //https://duckhawk-1699a.firebaseio.com/ApplicationForSeller.json
 
 
-              FirebaseDatabase.instance.reference().child('Products').child(
-                  scity)
-                  .child(_radio)
-                  .push()
+              FirebaseDatabase.instance.reference().child('Products').child(scity).child(_radio).push()
                   .set(
                   {
                     'description': _description,
