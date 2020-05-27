@@ -194,7 +194,9 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
    getuser() async{
+
     FirebaseUser user=await FirebaseAuth.instance.currentUser();
+
     if(user.uid!=null)
       {
         Fluttertoast.showToast(

@@ -121,31 +121,35 @@ class _AddProductState extends State<AddProduct> {
       selectradio=val;
       if(selectradio==1)
       {
-        _radio='Groceries';
+        _radio='Electronics';
       }
       else if(selectradio==2)
       {
-        _radio='Fashion';
+        _radio='Grocery';
       }
       else if(selectradio==3)
       {
-        _radio='Electronics';
+        _radio='Vegetables';
       }
       else if(selectradio==4)
       {
-        _radio='Sports';
+        _radio='Non Veg';
       }
       else if(selectradio==5)
       {
-        _radio='Books';
+        _radio='TV Home & Furniture';
       }
       else if(selectradio==6)
       {
-        _radio='Home & Furniture';
+        _radio='Clothing';
       }
       else if(selectradio==7)
       {
-        _radio='Beauty & Personal Care';
+        _radio='Books and Study Materials';
+      }
+      else if(selectradio==8)
+      {
+        _radio='Wine';
       }
 
     });
@@ -441,7 +445,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Groceries')
+          new Text('Electronics')
         ],
       ),
       Row(
@@ -450,7 +454,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Fashion')
+          new Text('Grocery')
         ],
       ),
 
@@ -460,7 +464,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Electronics')
+          new Text('Vegetables')
         ],
       ),
       Row(
@@ -469,7 +473,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Sports')
+          new Text('Non Veg')
         ],
       ),
       Row(
@@ -478,7 +482,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Books')
+          new Text('Furnitures')
         ],
       ),
       Row(
@@ -487,7 +491,7 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Home & Furniture')
+          new Text('Clothing')
         ],
       ),
       Row(
@@ -496,7 +500,16 @@ class _AddProductState extends State<AddProduct> {
             print(val);
             setselectedRadio(val);
           },),
-          new Text('Beauty & Personal Care')
+          new Text('Study Materials')
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          new Radio(value: 8, groupValue: selectradio, activeColor: Colors.green,onChanged: (val){
+            print(val);
+            setselectedRadio(val);
+          },),
+          new Text('Wine')
         ],
       ),
       /*Row(
@@ -956,11 +969,11 @@ class _AddProductState extends State<AddProduct> {
               FirebaseDatabase.instance.reference().child('Products').child(scity).child(_radio).push()
                   .set(
                   {
-                    'description': _description,
-                    'imgurl': u[0].toString(),
+                    'ProductDesc': _description,
+                    'Product_Image': u[0].toString(),
                     'name': _name,
                     'price': _price,
-                    'quantity': _quantity,
+                    'stock': _quantity,
                     'seller': user.uid
                   }
 

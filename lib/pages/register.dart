@@ -60,6 +60,7 @@ class _SellerRegisterState extends State<SellerRegister> {
   String _state;
   String _zip;
   String _radio;
+  String _cat;
   Map<String, String> _paths;
   String _extension='pdf';
   bool _multiPick = false;
@@ -243,6 +244,64 @@ class _SellerRegisterState extends State<SellerRegister> {
           setState(()=>_shopname=val);
         },
 
+      ),
+      new DropdownButton<String>(
+        hint: Text(_cat==null?"Category":_cat),
+        items: [
+          DropdownMenuItem<String>(
+            value:"Electronics",
+            child: Center(
+              child:Text("Electronics"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Grocery",
+            child: Center(
+              child:Text("Grocery"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Vegetables",
+            child: Center(
+              child:Text("Vegetables"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Non Veg",
+            child: Center(
+              child:Text("Non Veg"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Furnitures",
+            child: Center(
+              child:Text("Furnitures"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Clothing",
+            child: Center(
+              child:Text("Clothing"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Study Materials",
+            child: Center(
+              child:Text("Study Materials"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value:"Wine",
+            child: Center(
+              child:Text("Wine"),
+            ),
+          ),
+        ],
+        onChanged: (val){
+          setState(() {
+            _cat=val;
+          });
+        },
       ),
 
       SizedBox(height: 20.0),
@@ -843,6 +902,7 @@ class _SellerRegisterState extends State<SellerRegister> {
                 'Owner_Number':_phone,
                 'Manager_Name':_mname,
                 'Manager_Phone':_mphone,
+                'Category':_cat,
                 'Aadhar_Number':_gst,
                 'Address1':"${widget.add}",
                 'Address2':_add2,
@@ -851,8 +911,8 @@ class _SellerRegisterState extends State<SellerRegister> {
                 'Zip':_zip,
                 'Latitude':'${widget.lat}',
                 'Longitude':'${widget.lon}',
-                'HaveMulShop':_radio
-                //'Shop_Image':url1
+                'HaveMulShop':_radio,
+                'Shop_Image':url1
               });
               pr.hide();
               Fluttertoast.showToast(

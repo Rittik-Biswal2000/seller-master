@@ -8,6 +8,7 @@ import 'package:seller/src/loginPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:seller/pages/login_page.dart';
 import 'package:seller/src/Widget/bezierContainer.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key key, this.title}) : super(key: key);
@@ -90,38 +91,56 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     elevation: 7.0,
-                    onPressed: () {
-                      FirebaseAuth.instance
+                    onPressed: () async{
+                      pr.show();
+                      await FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
                           email: _email, password: _password)
                           .then((signedInUser) {
-
                         //signedInUser.user.displayName=_name;
 
-                        Firestore.instance.collection('/users').document(signedInUser.user.uid).setData({
+                        Firestore.instance.collection('/users').document(
+                            signedInUser.user.uid).setData({
 
-                          'uid':signedInUser.user.uid,
-                          'Email':signedInUser.user.email,
-                          'Name':_name,
-                          'Phone Number':_phone,
-                          'isSeller':_isSeller,
+                          'uid': signedInUser.user.uid,
+                          'Email': signedInUser.user.email,
+                          'Name': _name,
+                          'Phone Number': _phone,
+                          'isSeller': _isSeller,
                         });
+                        pr.hide();
+                        if (signedInUser.user.uid != null){
+                          Fluttertoast.showToast(
+                              msg: "Registered Successfully | Enter more details about your business",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.white,
+                              fontSize: 8.0
+                          );
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SellerRegister(null,null,null)),
+                          );
+                        }
+
+
+                      }).catchError((e) {
+                        pr.hide();
                         Fluttertoast.showToast(
-                            msg: "Enter more details about your business ",
-                            toastLength: Toast.LENGTH_SHORT,
+                            msg: e.toString(),
+                            toastLength: Toast.LENGTH_LONG,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             textColor: Colors.white,
                             fontSize: 8.0
                         );
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SellerRegister(null,null,null)),
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
                         );
-
-
-                      }).catchError((e) {
-                        print(e);
                       });
 
                     },
@@ -139,6 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
               )),
         );
   }
+
 
  /* Widget _submitButton() {
     return Container(
@@ -229,9 +249,12 @@ class _SignUpPageState extends State<SignUpPage> {
       ],
     );
   }
-
+ProgressDialog pr;
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
+
     return Scaffold(
         body: SingleChildScrollView(
             child:Container(

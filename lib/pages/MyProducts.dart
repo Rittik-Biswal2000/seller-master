@@ -16,6 +16,7 @@ TextEditingController _editingController;
 FirebaseUser user;
 ProgressDialog pr;
 String qu;
+var ip,iq,iid,icat;
 /*
 List seller=[];
 List imgurl=[];
@@ -200,23 +201,26 @@ class _mpState extends State<mp> {
                         new Row(
                           children: <Widget>[
                             new FlatButton(onPressed: (){
+                              ip=price[index];
+                              iq=quantity[index];
+                              iid=prod_id[index];
+                              icat=prod_cat[index];
+                              print(ip);
+                              print(iq);
                               //createAlertDialog(context, name.split(': ')[1], imgurl, price.split(': ')[1]);
-                              print(prod_cat[index]);
-                              print(prod_id[index]);
-                              print(name[index]);
-                              print(imgurl[index]);
-                              print(price[index]);
-                              print(quantity[index]);
+
+
 
 
 
 
                               Navigator.push(context, MaterialPageRoute(
+
                                   builder: (context) => new item_info(prod_cat[index],prod_id[index],name[index],imgurl[index],price[index],quantity[index])));
 
                              // createAlertDialog(context,item_name[index],imageurl[index],prod_price[index],item_units[index],u[index].data["ProductId"]);
                             },
-                                child:Text("Update")
+                                child:Text("More")
                             ),
                             new FlatButton(
                                 onPressed: (){

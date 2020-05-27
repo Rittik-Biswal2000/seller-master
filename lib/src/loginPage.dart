@@ -5,6 +5,7 @@ import 'package:seller/main.dart';
 import 'package:seller/pages/add_product.dart';
 import 'package:seller/src/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:seller/src/signup.dart';
 
 import 'Widget/bezierContainer.dart';
@@ -93,22 +94,49 @@ class _lpState extends State<lp> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     elevation: 7.0,
-                    onPressed: () {
-                      FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password).then((user){
-                        print(user.user.uid);
+                    onPressed: () async{
+                      pr.show();
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password).then((user)  {
+                        pr.hide();
+
+                        if(user.user.uid!=null) {
+                          Fluttertoast.showToast(
+                              msg: "Logged in Successfully",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.white,
+                              fontSize: 8.0
+                          );
+                          pr.hide();
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage(null)));
+
+                          /*Navigator.push(
+                               context,
+                               MaterialPageRoute(builder: (context) => MyApp()));*/
+
+                        }
+                        /* Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyApp()),
+                        );*/
+                      }).catchError((e) {
+                        pr.hide();
                         Fluttertoast.showToast(
-                            msg: "Logged in Successfully",
+                            msg: e.toString(),
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             textColor: Colors.white,
                             fontSize: 8.0
                         );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage(null)),
-                        );
-                      }).catchError((e) {});
+
+                      });
+
+
                     },
                   ),
 
@@ -302,9 +330,11 @@ class _lpState extends State<lp> {
       ],
     );
   }
-
+  ProgressDialog pr;
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
     return Scaffold(
         body: SingleChildScrollView(
             child: Container(
