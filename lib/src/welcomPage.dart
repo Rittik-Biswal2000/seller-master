@@ -2,6 +2,7 @@
 
 import 'dart:collection';
 import 'dart:convert';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:seller/main.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,7 +38,7 @@ List l=[];
 List prod_id=[];
 List prod_cat=[];
 var len;
-
+ProgressDialog pr;
 class _WelcomePageState extends State<WelcomePage> {
 
   Widget _submitButton() {
@@ -152,6 +153,20 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context);
+    pr.style(
+        message: 'Please Wait...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
+    );
     return Scaffold(
       body:SingleChildScrollView(
         child:Container(
@@ -195,9 +210,11 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
    getuser() async{
+
     var pc=await _getCurrentLocation();
 
     FirebaseUser user=await FirebaseAuth.instance.currentUser();
+
 
     if(user.uid!=null)
       {

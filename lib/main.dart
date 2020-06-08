@@ -328,11 +328,11 @@ class _HomePageState extends State<HomePage> {
                 child: new OutlineButton(
                     child: new Text("My Products"),
                     onPressed:  () async {
-                      pr.show();
-                      await getproducts();
-                      pr.hide();
+                     // pr.show();
+                      //await getproducts();
+                      //pr.hide();
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => new mp()));
+                          builder: (context) => new myp(widget.add)));
                     } ,
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0))
