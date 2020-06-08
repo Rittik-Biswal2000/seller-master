@@ -11,6 +11,8 @@ import 'package:seller/entry.dart';
 import 'package:seller/pages/add_product.dart';
 import 'package:seller/pages/MyProducts.dart';
 import 'package:seller/pages/location.dart';
+import 'package:seller/pages/mloc.dart';
+import 'package:seller/pages/orders.dart';
 import 'package:seller/pages/register.dart';
 import 'package:seller/pages/sellerlogin.dart';
 import 'package:seller/src/welcomPage.dart';
@@ -30,7 +32,11 @@ FirebaseUser user;
 }*/
 String badd="Loading";
 String x;
-//String curlat,curlon;
+final Geolocator geolocator = Geolocator()
+  ..forceAndroidLocationManager;
+Position _currentPosition;
+String _currentAddress;
+String curlat1,curlon1;
 class HomePage extends StatefulWidget {
 
   final add;
@@ -69,9 +75,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     //getproducts();
-    test();
-
-    _getCurrentLocation();
+    //test();
+    _getculoc();
     _getCurrentUser();
     print("Here outside async");
   }
@@ -131,20 +136,22 @@ class _HomePageState extends State<HomePage> {
                       <Widget>[
                         new IconButton(
                           icon: new Icon(Icons.place),
-                          onPressed: () {
-                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>new MyLocation()));
-                            _getCurrentLocation();
+                          onPressed: () async{
+                            await _getCurrentLocation();
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>new mloc()));
+
                             currentUser();
                           },
                         ),
                         SingleChildScrollView(
                           child: Container(
-                              child: new FlatButton(onPressed: () {
-                                /*Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => new MyLocation()));*/
+                              child: new FlatButton(onPressed: () async{
+                                await _getCurrentLocation();
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => new mloc()));
                               }, child: Text(widget.add == null
                                   ? badd
-                                  : "${widget.add}", style: new TextStyle(
+                                  : widget.add   , style: new TextStyle(
                                   fontSize: 15.0, color: Colors.white),))),)
                         //child: new FlatButton(onPre,new Text("${widget.add}",style: new TextStyle(fontSize: 15.0),)))),
 
@@ -334,6 +341,18 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 child: new OutlineButton(
+                    child: new Text("Orders"),
+                    onPressed:  () async {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => new orders(widget.add)));
+                    } ,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0))
+                ),
+
+              ),
+              Container(
+                child: new OutlineButton(
                     child: new Text("Logout"),
                     onPressed: (u != null) ? () {
                       _signOut();
@@ -437,4 +456,53 @@ class _HomePageState extends State<HomePage> {
       },
     ) ?? false;
   }
+
+
+}
+_getculoc() async{
+  var p;
+  final Geolocator geolocator = Geolocator()
+    ..forceAndroidLocationManager;
+
+  await geolocator
+      .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+      .then((Position position) async {
+    _currentPosition = position;
+    p=await _getAddressFromLatLng();
+    /*setState(() {
+    });*/
+    //
+  }).catchError((e) {
+    print(e);
+  });
+
+  //print("p is :"+'${p}');
+  //return p;
+}
+
+Future<String>_getAddressFromLatLng() async {
+  try {
+    List<Placemark> p = await geolocator.placemarkFromCoordinates(
+        _currentPosition.latitude, _currentPosition.longitude);
+    curlat1 = _currentPosition.latitude.toString();
+    curlon1 = _currentPosition.longitude.toString();
+
+    Placemark place = p[0];
+    //print("in this page");
+    _currentAddress="${place.locality}";
+    //print(place.locality);
+
+    /*setState(() {
+        _currentAddress = "${place.locality}";
+        print(place.locality);
+      });*/
+    badd = _currentAddress;
+    // print("Current location is :"+badd);
+  } catch (e) {
+    print(e);
+  }
+
+  var x=badd;
+  // print("location is : "+x);
+  return x;
 }

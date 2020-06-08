@@ -2,13 +2,13 @@
 
 import 'dart:collection';
 import 'dart:convert';
+import 'package:seller/main.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:seller/main.dart';
 import 'package:seller/pages/MyProducts.dart';
 import 'package:seller/pages/register.dart';
 import 'package:seller/src/loginPage.dart';
@@ -146,6 +146,7 @@ class _WelcomePageState extends State<WelcomePage> {
     getuser();
     // TODO: implement initState
    // getproducts();
+
     super.initState();
   }
 
@@ -194,6 +195,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
    getuser() async{
+    var pc=await _getCurrentLocation();
 
     FirebaseUser user=await FirebaseAuth.instance.currentUser();
 
@@ -212,7 +214,7 @@ class _WelcomePageState extends State<WelcomePage> {
       }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomePage(null)),
+      MaterialPageRoute(builder: (context) => HomePage(pc)),
     );
 
 
@@ -255,11 +257,11 @@ getdata()async {
   {
     LinkedHashMap<String,dynamic>data=jsonDecode(resource.body);
     print("city is:");
-    print(data["City"]);
-    scity=data["City"];
+    //print(data["City"]);
+    //scity=data["City"];
 
   }
-  String link1="https://duckhawk-1699a.firebaseio.com/Seller/"+scity+"/"+user.uid+"/"+"products.json";
+  String link1="https://duckhawk-1699a.firebaseio.com/Seller/"+"Bhubaneswar"+"/"+user.uid+"/"+"products.json";
   final resource1 = await http.get(link1);
   if(resource1.statusCode==200)
     {
@@ -277,7 +279,7 @@ getdata()async {
         prod_id.add(k[h]);
         prod_cat.add(data2["cat"]);
 
-        String link2="https://duckhawk-1699a.firebaseio.com/Products/"+scity+"/"+data2["cat"]+"/"+k[h]+".json";
+        String link2="https://duckhawk-1699a.firebaseio.com/Products/"+"Bhubaneswar"+"/"+data2["cat"]+"/"+k[h]+".json";
         print(link2);
         final resource3 = await http.get(link2);
         if(resource3.statusCode == 200)

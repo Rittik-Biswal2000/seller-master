@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   firebase_auth: 0.15.4
   google_fonts: ^0.3.10
+  maps_launcher:
+  url_launcher:
   carousel_pro: ^1.0.0
   firebase_database: ^3.1.1
   google_maps_flutter: ^0.5.24
